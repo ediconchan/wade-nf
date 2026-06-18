@@ -82,12 +82,18 @@ switch(subcmd,
     source(file.path(LIB, "rrna16s.R"))
     run_rrna16s_format(opt$org, opt$profile, opt$outdir)
   },
+  "serotype" = {
+    source(file.path(LIB, "serotype.R"))
+    run_serotype(opt$org, opt$sample, opt$contig, opt$refdir, opt$outdir, tempdir_or_default(opt))
+  },
   "labware" = {
     test <- opt$test
     if (opt$org == "GAS" && test == "AMR") {
       source(file.path(LIB, "labware/gas_amr.R"));     run_labware_gas_amr(opt$profile, opt$outdir)
     } else if (opt$org == "GAS" && test == "TOXINS") {
       source(file.path(LIB, "labware/gas_toxins.R"));  run_labware_gas_toxins(opt$profile, opt$outdir)
+    } else if (opt$org == "GBS" && test == "AMR") {
+      source(file.path(LIB, "labware/gbs_amr.R"));     run_labware_gbs_amr(opt$profile, opt$outdir)
     } else {
       stop(paste0("No labware formatter for org=", opt$org, " test=", test))
     }

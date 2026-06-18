@@ -2,6 +2,7 @@
 // WADE main workflow: parse samplesheet, branch by organism, run per-org routines
 //
 include { GAS } from '../subworkflows/local/gas.nf'
+include { GBS } from '../subworkflows/local/gbs.nf'
 
 workflow WADE {
 
@@ -58,14 +59,15 @@ workflow WADE {
     }
 
     //
-    // GAS
+    // Per-organism routines
     //
     GAS(ch_branched.gas, wade_data)
-    ch_versions = ch_versions.mix(GAS.out.versions)
+    GBS(ch_branched.gbs, wade_data)
+    ch_versions = ch_versions.mix(GAS.out.versions, GBS.out.versions)
 
     //
-    // GBS / GONO / PNEUMO subworkflows are wired the same way once their
-    // LabWare formatters are ported (SPEC.md migration plan phase 3-4).
+    // GONO / PNEUMO subworkflows are wired the same way once their LabWare
+    // formatters are ported (SPEC.md migration plan phase 3-4).
     //
 
     //

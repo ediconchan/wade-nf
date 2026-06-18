@@ -1,0 +1,2 @@
+lw_CurrSampleNo,lw_ermA,lw_ermB,lw_ermT,lw_mefAE,lw_lsaC,lw_lnuB,lw_gyrA,lw_parC,lw_tetM,lw_tetO,lw_tetT,lw_tetL,lw_cat,lw_catQ,lw_pbp2x,molec_profile,ery_MIC,ery,chl_MIC,chl,lev_MIC,lev,cli_MIC,cli,tet_MIC,tet,pen_MIC,pen,AMR_profile,allele_profile
+GBS,NEG,POS,NEG,NEG,NEG,NEG,WT,S79Y/WT/WT,NEG,POS,NEG,NEG,NEG,NEG,WT/WT,ermB; parC S79Y; tetO,>= 2 ug/ml,Resistant,<= 4 ug/ml,Susceptible,4 ug/ml,Intermediate,>= 1 ug/ml,Resistant,>= 8 ug/ml,Resistant,<= 0.12 ug/ml,Susceptible,ERY-R/CLI-R/LEV-I/TET-R,gyrA 61: parC 60: pbp2x 5
