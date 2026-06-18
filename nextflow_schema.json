@@ -1,0 +1,84 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/phac-nml/wade-nf/main/nextflow_schema.json",
+    "title": "wade-nf pipeline parameters",
+    "description": "Nextflow port of WADE molecular typing (GAS/GBS/PNEUMO/GONO)",
+    "type": "object",
+    "defs": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "required": ["input", "outdir", "wade_data"],
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "format": "file-path",
+                    "schema": "assets/schema_input.json",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Path to comma-separated samplesheet (sample,organism,assembly,vcf,variable).",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "outdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Output directory for results.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "wade_data": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to the phac-nml/wade-data reference layout (<ORG>/<TEST>/{wildgenes,allele_lkup_dna,reference}).",
+                    "fa_icon": "fas fa-database"
+                }
+            }
+        },
+        "analysis_options": {
+            "title": "Analysis options",
+            "type": "object",
+            "properties": {
+                "organism": {
+                    "type": "string",
+                    "enum": ["GAS", "GBS", "GONO", "PNEUMO"],
+                    "description": "Default organism for samplesheet rows without an organism column.",
+                    "fa_icon": "fas fa-bacterium"
+                },
+                "analysis": {
+                    "type": "string",
+                    "default": "all",
+                    "description": "Which routine to run for each organism (currently 'all').",
+                    "fa_icon": "fas fa-list"
+                }
+            }
+        },
+        "blast_options": {
+            "title": "BLAST sensitivity",
+            "type": "object",
+            "description": "Exposed for documentation/override; per-(org,test) reference/blast_evalues.csv remains authoritative for parity.",
+            "properties": {
+                "blast_evalue_contig": { "type": "string", "default": "1e-50" },
+                "blast_evalue_allele": { "type": "string", "default": "1e-98" },
+                "wt_id_threshold": { "type": "integer", "default": 10 }
+            }
+        },
+        "generic_options": {
+            "title": "Generic options",
+            "type": "object",
+            "properties": {
+                "publish_dir_mode": {
+                    "type": "string",
+                    "default": "copy",
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"]
+                },
+                "help": { "type": "boolean" },
+                "version": { "type": "boolean" }
+            }
+        }
+    },
+    "allOf": [
+        { "$ref": "#/defs/input_output_options" },
+        { "$ref": "#/defs/analysis_options" },
+        { "$ref": "#/defs/blast_options" },
+        { "$ref": "#/defs/generic_options" }
+    ]
+}

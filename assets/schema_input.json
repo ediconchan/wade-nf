@@ -1,0 +1,41 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/phac-nml/wade-nf/main/assets/schema_input.json",
+    "title": "wade-nf samplesheet schema",
+    "description": "Schema for the wade-nf input samplesheet",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "meta": ["id"]
+            },
+            "organism": {
+                "type": "string",
+                "enum": ["GAS", "GBS", "GONO", "PNEUMO", "gas", "gbs", "gono", "pneumo"],
+                "errorMessage": "organism must be one of GAS, GBS, GONO, PNEUMO (or blank to use --organism)",
+                "meta": ["org"]
+            },
+            "assembly": {
+                "type": "string",
+                "format": "file-path",
+                "pattern": "^\\S+\\.(fa|fasta|fna)$",
+                "errorMessage": "Assembly FASTA must be provided, cannot contain spaces and must have extension '.fa', '.fasta' or '.fna'"
+            },
+            "vcf": {
+                "type": "string",
+                "format": "file-path",
+                "pattern": "^\\S+\\.vcf$",
+                "errorMessage": "VCF (optional, for 23S rRNA) must have extension '.vcf'"
+            },
+            "variable": {
+                "type": "string",
+                "meta": ["variable"]
+            }
+        },
+        "required": ["sample", "assembly"]
+    }
+}

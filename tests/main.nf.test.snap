@@ -1,0 +1,31 @@
+{
+    "gas_all_labware": {
+        "content": [
+            [
+                "lw_CurrSampleNo,lw_ermA,lw_ermB,lw_ermT,lw_mefAE,lw_gyrA,lw_parC,lw_tetM,lw_tetO,lw_tetT,lw_tetA,lw_tetB,lw_cat,lw_dfrF,lw_dfrG,lw_folA,lw_folP,lw_pbp2x,molec_profile,ery_MIC,ery,chl_MIC,chl,lev_MIC,lev,cli_MIC,cli,tet_MIC,tet,sxt_MIC,sxt,pen_MIC,pen,amr_profile,lw_allele_profile",
+                "GAS,NEG,POS,NEG,NEG,WT,WT/S79F/WT,POS,NEG,NEG,NEG,NEG,POS,POS,NEG,WT,WT,WT,ermB N100S; parC S79F; tetM; cat; dfrF,>= 2 ug/ml,Resistant,>= 32 ug/ml,Resistant,2 ug/ml,Susceptible,<= 0.12 ug/ml,Susceptible,>= 8 ug/ml,Resistant,>= 4 ug/ml,Resistant,<= 0.12 ug/ml,Susceptible,ERY-R/CHL-R/TET-R/SXT-R,ermB 43:gyrA 26:parC 7:folA 14:folP 25:pbp2x 15"
+            ],
+            [
+                "SampleNo,speA,speC,speG,speH,speI,speJ,speK,speL,speM,smeZ,ssa,sagA,TOXIN Profile",
+                "GAS,NEG,NEG,POS,NEG,NEG,NEG,POS,NEG,NEG,POS,NEG,POS,speG-speK-smeZ-sagA"
+            ],
+            [
+                "Sample,Type,Subtype_Rep,Subtype,bp_id,Comments",
+                "GAS,emm9,emm9.0,emm9.0,180,emm203.4"
+            ],
+            [
+                "SampleNo,Allele,Identification,Percent_Match",
+                "GAS,2,S.pyogenes,1552/1554 (99.9%)"
+            ],
+            [
+                "SampleNo,gki,gtr,murI,mutS,recP,xpt,yqiL,ST",
+                "GAS,72,14,7,18,19,3,1,125"
+            ]
+        ],
+        "timestamp": "2026-06-18T12:31:50.394007638",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "24.10.6"
+        }
+    }
+}

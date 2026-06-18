@@ -1,0 +1,54 @@
+name: CI
+# Mirrors phac-nml/wade CI but for Nextflow (SPEC.md section 14).
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  NXF_ANSI_LOG: false
+
+jobs:
+  test:
+    name: Test (stub + end-to-end + nf-test + parity)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive          # fetch pinned wade-data
+
+      - uses: nf-core/setup-nextflow@v2
+
+      - name: Set up runtime conda env (R + BLAST+)
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          environment-file: containers/environment.yml
+          activate-environment: wade-nf-runtime
+
+      - name: Layer 1 - stub run (plumbing)
+        run: nextflow run . -profile test,local_env -stub-run --outdir results_stub
+
+      - name: Layer 2 - end-to-end on example contigs
+        run: nextflow run . -profile test,local_env --outdir results
+
+      - name: Install nf-test
+        run: |
+          curl -fsSL https://code.askimed.com/install/nf-test | bash
+          sudo mv nf-test /usr/local/bin/
+
+      - name: Layer 3 - nf-test
+        run: nf-test test --profile local_env
+
+      - name: Layer 4 - parity vs original WADE (committed fixtures)
+        run: |
+          pip install pandas
+          python tests/bin/compare_csv.py results/GAS/LabWareUpload_GAS_AMR.csv     tests/fixtures/expected/LabWareUpload_GAS_AMR.csv
+          python tests/bin/compare_csv.py results/GAS/LabWareUpload_GAS_TOXINS.csv  tests/fixtures/expected/LabWareUpload_GAS_TOXINS.csv
+          python tests/bin/compare_csv.py results/GAS/LabWareUpload_GAS_emm.csv     tests/fixtures/expected/LabWareUpload_GAS_emm.csv
+          python tests/bin/compare_csv.py results/GAS/LabWareUpload_GAS_rRNA16S.csv tests/fixtures/expected/LabWareUpload_GAS_rRNA16S.csv
+          python tests/bin/compare_csv.py results/GAS/LabWareUpload_GAS_MLST.csv    tests/fixtures/expected/output_profile_GAS_MLST.csv

@@ -1,0 +1,5 @@
+sample,organism,assembly,vcf,variable
+GAS,GAS,GAS.fasta,,
+GBS,GBS,GBS.fasta,,
+PNEUMO,PNEUMO,PNEUMO.fasta,PNEUMO.vcf,
+GONO,GONO,GONO.fasta,GONO.vcf,

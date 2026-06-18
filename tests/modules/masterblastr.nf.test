@@ -1,0 +1,30 @@
+nextflow_process {
+
+    name "Test MASTERBLASTR (GAS AMR)"
+    script "modules/local/masterblastr.nf"
+    process "MASTERBLASTR"
+    tag "modules"
+    tag "masterblastr"
+
+    test("GAS AMR - example contig") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'GAS', org:'GAS', variable:'' ],
+                    file("\${projectDir}/assets/test_data/GAS.fasta", checkIfExists: true)
+                ]
+                input[1] = file("\${projectDir}/wade-data/GAS/AMR", checkIfExists: true)
+                input[2] = 'AMR'
+                """
+            }
+        }
+        then {
+            assert process.success
+            // profile CSV content is the regression net (allele/mutation calls)
+            assert snapshot(
+                process.out.profile.collect { meta, f -> file(f).readLines() }
+            ).match("gas_amr_profile")
+        }
+    }
+}

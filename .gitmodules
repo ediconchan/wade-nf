@@ -1,0 +1,3 @@
+[submodule "wade-data"]
+	path = wade-data
+	url = https://github.com/phac-nml/wade-data.git

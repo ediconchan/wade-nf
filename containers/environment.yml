@@ -1,0 +1,21 @@
+# Minimal in-process conda env used by `-profile conda` (SPEC.md section 10).
+# This is the RUNTIME subset (R + BLAST+) that Nextflow tasks need -- it is NOT
+# the developer superset (which also has Nextflow/nf-core/nf-test); that lives in
+# the repo-root environment.yml.
+#
+# tidysq is intentionally omitted: the ported R (bin/lib) does its not-found
+# dedup in base R, so the runtime does not depend on the CRAN-only tidysq.
+name: wade-nf-runtime
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - blast>=2.15
+  - r-base>=4.4
+  - r-tidyverse
+  - r-plyr
+  - r-tidyselect
+  - r-data.table
+  - r-optparse
+  - bioconductor-biostrings
+  - bioconductor-pwalign   # pairwiseAlignment() moved here in Biostrings >= 2.77

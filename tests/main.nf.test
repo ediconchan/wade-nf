@@ -1,0 +1,34 @@
+nextflow_pipeline {
+
+    name "wade-nf GAS ALL routine end-to-end"
+    script "main.nf"
+    tag "pipeline"
+
+    test("GAS -profile test") {
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+        then {
+            assert workflow.success
+
+            // all GAS ALL deliverables exist (SPEC.md section 7)
+            assert path("$outputDir/GAS/LabWareUpload_GAS_AMR.csv").exists()
+            assert path("$outputDir/GAS/LabWareUpload_GAS_TOXINS.csv").exists()
+            assert path("$outputDir/GAS/LabWareUpload_GAS_emm.csv").exists()
+            assert path("$outputDir/GAS/LabWareUpload_GAS_rRNA16S.csv").exists()
+            assert path("$outputDir/GAS/LabWareUpload_GAS_MLST.csv").exists()
+            assert path("$outputDir/GAS/LabWareUpload_GAS_MLST_good.csv").exists()
+
+            // content regression net
+            assert snapshot(
+                path("$outputDir/GAS/LabWareUpload_GAS_AMR.csv").readLines(),
+                path("$outputDir/GAS/LabWareUpload_GAS_TOXINS.csv").readLines(),
+                path("$outputDir/GAS/LabWareUpload_GAS_emm.csv").readLines(),
+                path("$outputDir/GAS/LabWareUpload_GAS_rRNA16S.csv").readLines(),
+                path("$outputDir/GAS/LabWareUpload_GAS_MLST.csv").readLines()
+            ).match("gas_all_labware")
+        }
+    }
+}

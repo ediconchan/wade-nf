@@ -1,0 +1,16 @@
+repository_type: pipeline
+nf_core_version: 3.2.1
+lint:
+  # This is a hand-written DSL2 pipeline that follows nf-core conventions but was
+  # not generated from the nf-core template, so template-only files/checks are skipped.
+  files_exist: false
+  files_unchanged: false
+  nextflow_config: false
+  readme: false
+  pipeline_todos: false
+  multiqc_config: false
+  nfcore_yml: false
+  pipeline_name_conventions: false
+  schema_lint: false
+  schema_params: false
+  system_exit: false

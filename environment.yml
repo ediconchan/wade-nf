@@ -1,0 +1,49 @@
+# WADE-NF developer / build environment
+# ----------------------------------------------------------------------------
+# Single conda env with EVERYTHING needed to build, run, and test the
+# WADE -> Nextflow port described in SPEC.md:
+#   * Nextflow runtime + toolchain (nf-core scaffolding/lint, nf-test)
+#   * BLAST+ (the analysis engine the R processes shell out to)
+#   * R + the analysis packages (run bin/ scripts locally, generate golden
+#     fixtures for parity tests in SPEC.md section 14, layer 4)
+#   * Python harness deps for the golden-file CSV comparison
+#
+# NOTE: this is the SUPERSET developer env. The in-process container env that
+# Nextflow uses with `-profile conda` (SPEC section 10) is just the R + BLAST
+# subset; keep that one minimal in containers/environment.yml.
+#
+# r-tidysq is CRAN-only (not packaged on conda) -> installed after creation:
+#   conda run -n wade-nf Rscript -e 'install.packages("tidysq", repos="https://cloud.r-project.org")'
+#
+# Create:  conda env create -f environment.yml
+# Update:  conda env update -f environment.yml --prune
+# Use:     conda activate wade-nf
+# ----------------------------------------------------------------------------
+name: wade-nf
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  # --- Nextflow toolchain -----------------------------------------------------
+  - nextflow=24.10
+  - nf-core=3.2
+  - nf-test=0.9
+  - openjdk=17
+
+  # --- Analysis engine --------------------------------------------------------
+  - blast>=2.15            # provides blastn + makeblastdb
+
+  # --- R + WADE analysis stack ------------------------------------------------
+  - r-base>=4.4
+  - r-tidyverse
+  - r-plyr
+  - r-tidyselect
+  - r-data.table
+  - r-optparse             # CLI parsing for bin/wade.R
+  - r-readxl               # used by metrics()
+  - r-remotes              # to pull tidysq (CRAN) post-create
+  - bioconductor-biostrings
+
+  # --- Golden-file parity test harness (tests/bin/compare_csv.py) -------------
+  - pandas
+  - csvkit
