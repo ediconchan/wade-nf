@@ -1,8 +1,9 @@
 //
 // WADE main workflow: parse samplesheet, branch by organism, run per-org routines
 //
-include { GAS } from '../subworkflows/local/gas.nf'
-include { GBS } from '../subworkflows/local/gbs.nf'
+include { GAS    } from '../subworkflows/local/gas.nf'
+include { GBS    } from '../subworkflows/local/gbs.nf'
+include { PNEUMO } from '../subworkflows/local/pneumo.nf'
 
 workflow WADE {
 
@@ -40,13 +41,10 @@ workflow WADE {
             [ meta, assembly, vcf ]
         }
 
-    // contig channel [meta, assembly]
-    ch_contigs = ch_rows.map { meta, assembly, vcf -> [ meta, assembly ] }
-
     //
-    // Branch by organism
+    // Branch by organism (keep vcf alongside assembly for 23S analyses)
     //
-    ch_branched = ch_contigs.branch { meta, assembly ->
+    ch_branched = ch_rows.branch { meta, assembly, vcf ->
         gas:    meta.org == 'GAS'
         gbs:    meta.org == 'GBS'
         gono:   meta.org == 'GONO'
@@ -54,20 +52,25 @@ workflow WADE {
         other:  true
     }
 
-    ch_branched.other.map { meta, assembly ->
+    ch_branched.other.map { meta, assembly, vcf ->
         log.warn "Organism '${meta.org}' (sample ${meta.id}) is not supported; skipping"
     }
+
+    // helpers to split a [meta, assembly, vcf] channel
+    def contigs_of = { ch -> ch.map { meta, assembly, vcf -> [ meta, assembly ] } }
+    def vcf_of     = { ch -> ch.map { meta, assembly, vcf -> [ meta, vcf ] } }
 
     //
     // Per-organism routines
     //
-    GAS(ch_branched.gas, wade_data)
-    GBS(ch_branched.gbs, wade_data)
-    ch_versions = ch_versions.mix(GAS.out.versions, GBS.out.versions)
+    GAS(contigs_of(ch_branched.gas), wade_data)
+    GBS(contigs_of(ch_branched.gbs), wade_data)
+    PNEUMO(contigs_of(ch_branched.pneumo), vcf_of(ch_branched.pneumo), wade_data)
+    ch_versions = ch_versions.mix(GAS.out.versions, GBS.out.versions, PNEUMO.out.versions)
 
     //
-    // GONO / PNEUMO subworkflows are wired the same way once their LabWare
-    // formatters are ported (SPEC.md migration plan phase 3-4).
+    // GONO subworkflow is wired the same way once labware_gono_amr is ported
+    // (SPEC.md migration plan phase 3-4).
     //
 
     //

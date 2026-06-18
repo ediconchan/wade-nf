@@ -51,6 +51,7 @@ opt_list <- list(
   make_option("--vcf",      type = "character", default = NA),
   make_option("--refdir",   type = "character", default = NA),
   make_option("--profile",  type = "character", default = NA),
+  make_option("--profile2", type = "character", default = NA),
   make_option("--outdir",   type = "character", default = "."),
   make_option("--tempdir",  type = "character", default = NA)
 )
@@ -94,6 +95,10 @@ switch(subcmd,
       source(file.path(LIB, "labware/gas_toxins.R"));  run_labware_gas_toxins(opt$profile, opt$outdir)
     } else if (opt$org == "GBS" && test == "AMR") {
       source(file.path(LIB, "labware/gbs_amr.R"));     run_labware_gbs_amr(opt$profile, opt$outdir)
+    } else if (opt$org == "PNEUMO" && test == "AMR") {
+      source(file.path(LIB, "labware/pneumo_amr.R"));  run_labware_pneumo_amr(opt$profile, opt$profile2, opt$refdir, opt$outdir)
+    } else if (opt$org == "PNEUMO" && test == "VIRULENCE") {
+      source(file.path(LIB, "labware/pneumo_virulence.R")); run_labware_pneumo_virulence(opt$profile, opt$outdir)
     } else {
       stop(paste0("No labware formatter for org=", opt$org, " test=", test))
     }
