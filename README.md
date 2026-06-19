@@ -13,12 +13,13 @@ full conversion specification.
 | Organism | Routine | State |
 |----------|---------|-------|
 | **GAS** | AMR, TOXINS, MLST, EMM, rRNA16S (`ALL`) | ✅ implemented & **parity-validated** vs original R |
-| GBS | AMR, MLST, rRNA16S, SERO | 🚧 modules + R helpers in place; subworkflow + labware pending |
-| PNEUMO | AMR_ALL+23S, MLST, VIRULENCE, SERO | 🚧 23S/MLST/MASTERBLASTR ported; pneumo labware pending |
-| GONO | AMR_ALL+NGSTAR+23S, MLST/NGMAST | 🚧 MLST/NGSTAR/NGMAST/23S ported; gono labware pending |
+| **GBS** | AMR, MLST, rRNA16S, SERO | ✅ implemented & **parity-validated** vs original R |
+| **PNEUMO** | AMR_ALL+23S, MLST, VIRULENCE, SERO | ✅ implemented & **parity-validated** vs original R |
+| **GONO** | AMR_ALL+NGSTAR+23S, MLST, NGSTAR, NGMAST | ✅ implemented & **parity-validated** vs original R |
 
-The GAS `ALL` routine passes the spec's **minimum bar**: Layers 1–3 green and Layer-4 parity
-(byte-identical *as data*) against the original WADE on the bundled example contig.
+Every organism's `ALL` routine passes the spec's **minimum bar to call the port done**: Layers 1–3
+green and Layer-4 parity (byte-identical *as data*) against the original WADE on the bundled
+example contigs.
 
 ## Quick start
 

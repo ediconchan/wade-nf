@@ -4,6 +4,7 @@
 include { GAS    } from '../subworkflows/local/gas.nf'
 include { GBS    } from '../subworkflows/local/gbs.nf'
 include { PNEUMO } from '../subworkflows/local/pneumo.nf'
+include { GONO   } from '../subworkflows/local/gono.nf'
 
 workflow WADE {
 
@@ -66,12 +67,8 @@ workflow WADE {
     GAS(contigs_of(ch_branched.gas), wade_data)
     GBS(contigs_of(ch_branched.gbs), wade_data)
     PNEUMO(contigs_of(ch_branched.pneumo), vcf_of(ch_branched.pneumo), wade_data)
-    ch_versions = ch_versions.mix(GAS.out.versions, GBS.out.versions, PNEUMO.out.versions)
-
-    //
-    // GONO subworkflow is wired the same way once labware_gono_amr is ported
-    // (SPEC.md migration plan phase 3-4).
-    //
+    GONO(contigs_of(ch_branched.gono), vcf_of(ch_branched.gono), wade_data)
+    ch_versions = ch_versions.mix(GAS.out.versions, GBS.out.versions, PNEUMO.out.versions, GONO.out.versions)
 
     //
     // Collect software versions
