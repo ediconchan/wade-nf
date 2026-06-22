@@ -45,6 +45,7 @@ jobs:
         run: nf-test test --profile local_env
 
       - name: Layer 4 - parity vs original WADE (committed fixtures)
+        continue-on-error: ${{ contains(github.head_ref, 'bump-wade-data') }}  # gate normally, info on data bumps
         run: |
           pip install pandas
           python tests/bin/compare_csv.py results/GAS/LabWareUpload_GAS_AMR.csv     tests/fixtures/expected/LabWareUpload_GAS_AMR.csv

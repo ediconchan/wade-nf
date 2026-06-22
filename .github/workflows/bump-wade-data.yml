@@ -1,0 +1,60 @@
+name: Bump wade-data
+# Monthly check of phac-nml/wade-data; opens a PR (which triggers ci.yml) when behind.
+on:
+  schedule:
+    - cron: "0 6 1 * *"     # 06:00 UTC, 1st of each month
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.WADE_DATA_BUMP_PAT }}   # PAT so the PR triggers ci.yml
+
+      - name: Check upstream wade-data for updates
+        id: check
+        run: |
+          pinned=$(git -C wade-data rev-parse HEAD)
+          upstream=$(git ls-remote https://github.com/phac-nml/wade-data.git HEAD | cut -f1)
+          echo "pinned=$pinned"     >> "$GITHUB_OUTPUT"
+          echo "upstream=$upstream" >> "$GITHUB_OUTPUT"
+          if [ "$pinned" = "$upstream" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "wade-data is up to date ($pinned)."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Update available: $pinned -> $upstream"
+          fi
+
+      - name: Bump submodule to latest main
+        if: steps.check.outputs.changed == 'true'
+        run: git submodule update --init --remote wade-data
+
+      - name: Open / update PR
+        if: steps.check.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.WADE_DATA_BUMP_PAT }}
+          branch: chore/bump-wade-data
+          base: main
+          labels: data-bump
+          commit-message: "chore: bump wade-data to ${{ steps.check.outputs.upstream }}"
+          title: "chore: bump wade-data submodule"
+          body: |
+            Automated monthly bump of the `wade-data` submodule.
+
+            - Pinned:   `${{ steps.check.outputs.pinned }}`
+            - Upstream: `${{ steps.check.outputs.upstream }}`
+            - Diff: https://github.com/phac-nml/wade-data/compare/${{ steps.check.outputs.pinned }}...${{ steps.check.outputs.upstream }}
+
+            Validation = `ci.yml` runs on this PR (stub + GAS end-to-end + nf-test).
+            Parity vs committed fixtures is **informational** here — a legitimate data
+            update can change outputs; regenerate `tests/fixtures/expected/` from upstream
+            WADE if the diff is expected.
